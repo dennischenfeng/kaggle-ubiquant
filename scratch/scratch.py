@@ -15,16 +15,22 @@
 
 # %%
 import numpy as np
+from definitions import ROOT_DIR
+import pandas as pd
+from typing import Iterable, Dict, Tuple
+from tqdm import tqdm
+from collections import defaultdict
+import plotly.express as px
 
 # %%
-root_path = 
+root_path = ROOT_DIR
 
 # %% [markdown]
 # # Datasets
 
 # %%
 # To do quick tests, use a smaller section of the data. 
-df = pd.read_csv(f'{drive_path}/data/train_small2.csv')
+df = pd.read_csv(f'{root_path}/data/train_small2.csv')
 
 # %%
 # first ensure time_id are always increasing or staying same
@@ -56,8 +62,31 @@ train_df.shape, test_df.shape
 # %%
 plots = []
 for iid in df.investment_id[:2]:
-    plots.append(go.Scatter(
+    plot = px.line(
         x=df[df.investment_id == iid].time_id,
         y=df[df.investment_id == iid].target
-    ))
-iplot(plots)
+    )
+    plot.show()
+    plots.append(plot)
+
+# %% [markdown]
+# # Scratch
+
+# %%
+df_smallest = df[df.investment_id.isin(pd.unique(df.investment_id)[:10])]
+
+# %%
+df_smallest.columns
+
+# %%
+
+# %%
+df_smallest = df_smallest.drop(columns=['Unnamed: 0'])
+
+# %%
+df_smallest
+
+# %%
+df_smallest.to_csv('train_smallest.csv')
+
+# %%
