@@ -133,3 +133,6 @@ scratch/*.ipynb
 
 # Mac
 .DS_Store
+
+# vscode
+.vscode
