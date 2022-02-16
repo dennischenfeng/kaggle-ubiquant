@@ -6,9 +6,11 @@ import pandas as pd
 import numpy as np
 from dataclasses import dataclass
 from collections import namedtuple
+from typing import Iterable, Callable, Dict, Any
 
 
 Dataset = namedtuple('Dataset', ['train', 'test'])
+
 
 def generate_dataset(
     n_investments_train: int, 
@@ -49,10 +51,21 @@ def generate_dataset(
 
 
 
-# TODO: use dataclass instead
-ModelConfig = namedtuple('ModelConfig', [
-    'use_investment_id', 
-])
+@dataclass
+class ModelConfig: 
+    """
+    Data for model configuration, including hparams
+    """
+    model_cls: Callable
+    model_hparams: Dict[str, Any]
+    use_investment_id: bool
+    num_lags: int = 1
+    lag_default_value: float = 0
+    
 
-def generate_model():
-    pass
+def generate_model(model_config: ModelConfig):
+    """
+    Initialize a model, ready to train on data.
+    """
+    assert model_config.num_lags == 1  # TODO allow more lags
+
