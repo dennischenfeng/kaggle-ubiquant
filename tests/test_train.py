@@ -17,14 +17,16 @@ def df_smallest():
 
 
 def test_generate_dataset(df_smallest):
-    dataset_config = DatasetConfig()
-    t = generate_dataset(5, 3, 2, df_smallest, dataset_config)
+    dataset_config = DatasetConfig(5, 3, 2)
+    t = generate_dataset(dataset_config, df_smallest)
     df_train = pd.unique(t.train.investment_id)
     assert df_train.shape[0] == 5
     df_test = pd.unique(t.test.investment_id)
     assert df_test.shape[0] == 3
     df_overlap = set(df_train).intersection(set(df_test))
     assert len(df_overlap) == 2
+
+    # dataset_config = DatasetConfig()
 
 
 def test_compute_lag1(df_smallest):

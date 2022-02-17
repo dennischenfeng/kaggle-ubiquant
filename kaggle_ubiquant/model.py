@@ -21,3 +21,4 @@ def generate_model(model_config: ModelConfig):
     Initialize a model, ready to train on data.
     """
     return model_config.model_cls(**model_config.model_kwargs)
+    
