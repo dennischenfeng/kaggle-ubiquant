@@ -28,8 +28,6 @@ def training_run(
         wandb.init(project=wandb_project)
         wandb.config.dataset_config = dataclasses.asdict(dataset_config)
         wandb.config.model_config = dataclasses.asdict(model_config)
-        # wandb doesn't unpack more than 1 level down in dictionaries, so need to do manually
-        wandb.config['model_config.model_kwargs'] = model_config.model_kwargs
     
     feature_columns = [elem for elem in list(dataset.train.columns) if elem != 'target']
     X = dataset.train.loc[:, feature_columns]
