@@ -5,11 +5,22 @@ Functions to help streamline the training pipeline.
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
-from collections import namedtuple
+from collections import defaultdict
 from typing import Iterable, Callable, Dict, Any
+from tqdm import tqdm
 
 
-Dataset = namedtuple('Dataset', ['train', 'test'])
+@dataclass
+class Dataset:
+    train: pd.DataFrame
+    test: pd.DataFrame
+
+
+@dataclass
+class DatasetConfig:
+    num_lags: int = 1
+    lag_default_value: float = 0
+    use_investment_id: bool = True
 
 
 def generate_dataset(
@@ -17,16 +28,15 @@ def generate_dataset(
     n_investments_test: int, 
     n_investments_overlap: int,
     df: pd.DataFrame,
+    dataset_config: DatasetConfig,
     start_test_time_id: int = 900,
 ) -> Dataset:
     """
     :param n_investments_overlap: num investments to be overlapping in train and test.
     """
-    """
-    get sampled investments for train
-    get sampled invetments for test, accounting for overlap
-    build the datasets
-    """
+    # TODO: allow more flexibility in config
+    assert dataset_config.num_lags == 1
+
     all_investment_ids = pd.unique(df.investment_id)
     # pool of iids for train requires data before start_test_time_id
     all_investment_ids_train = pd.unique(
@@ -47,8 +57,28 @@ def generate_dataset(
 
     train_df = df[df.investment_id.isin(iid_train) & (df.time_id < start_test_time_id)]
     test_df = df[df.investment_id.isin(iid_test) & (df.time_id >= start_test_time_id)]
-    return Dataset(train=train_df, test=test_df)
 
+    # Apply dataset_config
+    # TODO
+
+    return Dataset(train_df, test_df)
+
+
+def compute_lag1(df: pd.DataFrame) -> np.ndarray:
+    """
+    Lag_1 features (for time steps without a previous time step, just take last known target)
+    """
+    assert 'investment_id' in df.columns
+    assert 'target' in df.columns
+
+    last_target = defaultdict(lambda: 0)
+    result = np.zeros(df.shape[0])
+
+    for i in tqdm(df.index):
+        iid = df.loc[i, 'investment_id']
+        result[i] = last_target[iid]
+        last_target[iid] = df.loc[i, 'target']
+    return result
 
 
 @dataclass
