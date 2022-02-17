@@ -4,9 +4,11 @@ Unit tests for train.py
 
 import pytest
 import pandas as pd
+import wandb
 from xgboost import XGBClassifier
 from kaggle_ubiquant.dataset import generate_dataset, compute_lag1, DatasetConfig
 from kaggle_ubiquant.model import ModelConfig, generate_model
+from kaggle_ubiquant.train import training_run
 from definitions import ROOT_DIR
 import numpy as np
 
@@ -60,3 +62,12 @@ def test_generate_model():
     mc = ModelConfig(model_cls=XGBClassifier, model_kwargs=dict(tree_method='gpu_hist'))
     model = generate_model(mc)
     model.tree_method == 'gpu_hist'
+
+
+def test_training_run(df_smallest):
+    # TODO: how to test robustly with wandb?
+    dc = DatasetConfig(7, 5, 5)
+    mc = ModelConfig()
+    r = training_run(df_smallest, dc, mc, wandb_project=None)
+    assert -1.0 <= r <= 1.0
+    

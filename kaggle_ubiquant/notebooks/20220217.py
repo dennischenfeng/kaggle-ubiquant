@@ -48,38 +48,6 @@ mc = ModelConfig()
 # %% tags=[]
 # Moved code to git repo
 
-# def training_run(
-#     raw_df: pd.DataFrame,
-#     dataset_config: DatasetConfig, 
-#     model_config: ModelConfig, 
-#     wandb_project: Optional[str] = None,
-# ) -> float:
-#     """
-#     Returns a score (goal is to maximize). In this case, it's the Pearson correlation coeff.
-#     """
-#     dataset = generate_dataset(dataset_config, raw_df)
-#     model = generate_model(model_config)
-    
-#     if wandb_project:
-#         wandb.init(project=wandb_project)
-#         wandb.config.dataset_config = dataclasses.asdict(dataset_config)
-#         wandb.config.model_config = dataclasses.asdict(model_config)
-    
-#     feature_columns = [elem for elem in list(dataset.train.columns) if elem != 'target']
-#     X = dataset.train.loc[:, feature_columns]
-#     y = dataset.train.target
-#     model.fit(X, y)
-    
-#     preds = model.predict(dataset.test.loc[:, feature_columns])
-#     targets = dataset.test.target
-#     r, _ = pearsonr(preds, targets)
-    
-#     if wandb_project:
-#         wandb.log({'pearsonr': r})
-#         wandb.finish()
-    
-#     return r
-
 # %%
 # training_run(df, dc, mc, 'kaggleUbiquant-scratch')
 
@@ -108,7 +76,7 @@ wandb.finish()
 
 # %%
 study = optuna.create_study(direction='maximize')
-for i in range(3):
+for i in range(1):
     trial = study.ask()
     
     # if i == 0:
@@ -140,7 +108,7 @@ for i in range(3):
     )
     
     scores = []
-    for j in range(2):
+    for j in range(1):
         scores.append(training_run(df, dc, mc, 'kaggleUbiquant-scratch'))
         
     study.tell(trial, np.mean(scores))
