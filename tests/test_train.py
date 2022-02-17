@@ -17,16 +17,29 @@ def df_smallest():
 
 
 def test_generate_dataset(df_smallest):
+    # 1st
     dataset_config = DatasetConfig(5, 3, 2)
-    t = generate_dataset(dataset_config, df_smallest)
-    df_train = pd.unique(t.train.investment_id)
-    assert df_train.shape[0] == 5
-    df_test = pd.unique(t.test.investment_id)
-    assert df_test.shape[0] == 3
-    df_overlap = set(df_train).intersection(set(df_test))
-    assert len(df_overlap) == 2
+    ds = generate_dataset(dataset_config, df_smallest)
+    train_iids = pd.unique(ds.train.investment_id)
+    assert train_iids.shape[0] == 5
+    test_iids = pd.unique(ds.test.investment_id)
+    assert test_iids.shape[0] == 3
+    overlap_iids = set(train_iids).intersection(set(test_iids))
+    assert len(overlap_iids) == 2
 
-    # dataset_config = DatasetConfig()
+    assert 'target_lag1' in ds.train.columns
+    assert 'target_lag1' in ds.test.columns
+    assert ds.train.iloc[0, ds.train.columns.get_loc('target_lag1')] == 0
+    
+    # 2nd
+    dataset_config = DatasetConfig(5, 3, 2, num_lags=0)
+    ds = generate_dataset(dataset_config, df_smallest)
+    assert 'target_lag1' not in ds.train
+
+    # 3rd
+    dataset_config = DatasetConfig(5, 3, 2, lag_default_value=7.7)
+    ds = generate_dataset(dataset_config, df_smallest)
+    assert ds.train.iloc[0, ds.train.columns.get_loc('target_lag1')] == 7.7
 
 
 def test_compute_lag1(df_smallest):
