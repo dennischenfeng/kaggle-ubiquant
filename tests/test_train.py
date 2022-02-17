@@ -5,9 +5,8 @@ Unit tests for train.py
 import pytest
 import pandas as pd
 from xgboost import XGBClassifier
-from kaggle_ubiquant.train import (
-    ModelConfig, generate_dataset, compute_lag1, DatasetConfig, generate_model
-)
+from kaggle_ubiquant.dataset import generate_dataset, compute_lag1, DatasetConfig
+from kaggle_ubiquant.model import ModelConfig, generate_model
 from definitions import ROOT_DIR
 import numpy as np
 
