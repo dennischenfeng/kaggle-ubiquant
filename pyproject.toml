@@ -11,7 +11,7 @@ packages = [{include = "kaggle_ubiquant"}]
 python = "^3.9"
 numpy = "^1.22.2"
 matplotlib = "^3.5.1"
-pandas = "^1.4.1"
+pandas = "^1.3.5"
 jupyter = "^1.0.0"
 jupyterlab = "^3.2.9"
 wandb = "^0.12.10"
