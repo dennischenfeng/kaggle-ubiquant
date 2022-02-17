@@ -4,7 +4,10 @@ Unit tests for train.py
 
 import pytest
 import pandas as pd
-from kaggle_ubiquant.train import generate_dataset, compute_lag1, DatasetConfig
+from xgboost import XGBClassifier
+from kaggle_ubiquant.train import (
+    ModelConfig, generate_dataset, compute_lag1, DatasetConfig, generate_model
+)
 from definitions import ROOT_DIR
 import numpy as np
 
@@ -37,3 +40,9 @@ def test_compute_lag1(df_smallest):
     expected = np.array(df_smallest[mask_iid35]['target'])[:-1]
     actual = lag1[mask_iid35][1:]
     np.testing.assert_allclose(expected, actual)
+
+
+def test_generate_model():
+    mc = ModelConfig(model_cls=XGBClassifier, model_kwargs=dict(tree_method='gpu_hist'))
+    model = generate_model(mc)
+    model.tree_method == 'gpu_hist'

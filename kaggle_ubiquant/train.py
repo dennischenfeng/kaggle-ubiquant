@@ -4,10 +4,11 @@ Functions to help streamline the training pipeline.
 
 import pandas as pd
 import numpy as np
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import defaultdict
 from typing import Iterable, Callable, Dict, Any
 from tqdm import tqdm
+from xgboost import XGBClassifier
 
 
 @dataclass
@@ -86,16 +87,13 @@ class ModelConfig:
     """
     Data for model configuration, including hparams
     """
-    model_cls: Callable
-    model_hparams: Dict[str, Any]
-    use_investment_id: bool
-    num_lags: int = 1
-    lag_default_value: float = 0
+    model_cls: Callable = XGBClassifier
+    model_kwargs: Dict[str, Any] = field(default_factory=dict)
     
 
 def generate_model(model_config: ModelConfig):
     """
     Initialize a model, ready to train on data.
     """
-    assert model_config.num_lags == 1  # TODO allow more lags
+    return model_config.model_cls(**model_config.model_kwargs)
 
