@@ -1860,7 +1860,7 @@ termcolor = ">=1.1.0,<2.0.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "00d6d7000db649bf25a4067324678e15413a33c54af360b27d0500942f0a2110"
+content-hash = "81d525a5199e75c43e59ae5af2d7a95b865e18dcdbd5b6d9229e0eb893b8a5c2"
 
 [metadata.files]
 alembic = [
