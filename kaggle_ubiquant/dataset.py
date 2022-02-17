@@ -58,19 +58,21 @@ def generate_dataset(
     train_df = df[df.investment_id.isin(iid_train) & (df.time_id < dc.start_test_time_id)]
     test_df = df[df.investment_id.isin(iid_test) & (df.time_id >= dc.start_test_time_id)]
 
+    # Add lag column if needed
+    lag_columns = set()
+    for df in [train_df, test_df]:
+        if dc.num_lags == 1:
+            df['target_lag1'] = compute_lag1(df, lag_default_value=dc.lag_default_value)
+            lag_columns.add('target_lag1')
+        elif dc.num_lags > 1:
+            raise NotImplementedError('`num_lags` > 1 is not implemented yet.')
+
     # Select the columns for train_df and test_df
-    df_columns = ['time_id', 'target']
+    df_columns = ['time_id', 'target'] + list(lag_columns)
     if dc.use_investment_id: df_columns.append('investment_id')
     df_columns.extend([f'f_{i}' for i in range(300)])
     train_df = train_df[df_columns]
     test_df = test_df[df_columns]
-
-    # Add lag column if needed
-    for df in [train_df, test_df]:
-        if dc.num_lags == 1:
-            df['target_lag1'] = compute_lag1(df, lag_default_value=dc.lag_default_value)
-        elif dc.num_lags > 1:
-            raise NotImplementedError('`num_lags` > 1 is not implemented yet.')
 
     return Dataset(train_df, test_df)
 

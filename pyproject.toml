@@ -21,6 +21,7 @@ jupytext = "^1.13.7"
 tqdm = "^4.62.3"
 pytest = "^7.0.1"
 xgboost = "^1.5.2"
+optuna = "^2.10.0"
 
 [tool.poetry.dev-dependencies]
 

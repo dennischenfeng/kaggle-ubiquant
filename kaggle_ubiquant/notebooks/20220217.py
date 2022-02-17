@@ -28,6 +28,7 @@ from typing import Iterable, Dict, Tuple, Callable, Optional
 from scipy.stats import pearsonr
 import wandb
 import dataclasses
+import optuna
 
 # %%
 df = pd.read_csv(ROOT_DIR / 'data/train_smallest.csv')
@@ -44,7 +45,7 @@ len(pd.unique(df.investment_id))
 dc = DatasetConfig(7, 5, 5)
 mc = ModelConfig()
 
-# %% jupyter={"source_hidden": true} tags=[]
+# %% tags=[]
 # Moved code to git repo
 
 # def training_run(
@@ -80,7 +81,7 @@ mc = ModelConfig()
 #     return r
 
 # %%
-training_run(df, dc, mc, 'kaggleUbiquant-scratch')
+# training_run(df, dc, mc, 'kaggleUbiquant-scratch')
 
 # %% [markdown]
 # # Investigate wandb.sklearn
@@ -104,5 +105,44 @@ wandb.finish()
 # %% [markdown]
 # # Build training loop
 # with optuna to choose hparams
+
+# %%
+study = optuna.create_study(direction='maximize')
+for i in range(3):
+    trial = study.ask()
+    
+    # if i == 0:
+    #     dc = DatasetConfig(7, 5, 5)
+    #     mc = ModelConfig()
+    # else:
+    dc = DatasetConfig(
+        7, 5, 5,
+        use_investment_id=trial.suggest_categorical('use_investment_id', [True, False]),
+    )
+    mc = ModelConfig(
+        model_kwargs=dict(
+            learning_rate=trial.suggest_categorical(
+                'learning_rate',[0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+            ),
+            max_depth=trial.suggest_categorical(
+                'max_depth', [3, 4, 5, 6, 8, 10, 12, 15]
+            ),
+            min_child_weight=trial.suggest_categorical(
+                'min_child_cweight', [1, 3, 5, 7]
+            ),
+            gamma=trial.suggest_categorical(
+                'gamma', [0.0, 0.1, 0.2 , 0.3, 0.4]
+            ),
+            colsample_bytree=trial.suggest_categorical(
+                'colsample_bytree', [ 0.3, 0.4, 0.5 , 0.7 ]
+            ),
+        )
+    )
+    
+    scores = []
+    for j in range(2):
+        scores.append(training_run(df, dc, mc, 'kaggleUbiquant-scratch'))
+        
+    study.tell(trial, np.mean(scores))
 
 # %%
