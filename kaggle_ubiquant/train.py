@@ -19,7 +19,7 @@ def training_run(
     wandb_project: Optional[str] = None,
 ) -> Tuple[Any, float]:
     """
-    Returns the model and the score (goal is to maximize). In this case, score is the Pearson correlation coeff.
+    Returns the model and the score (the goal is to maximize). In this case, score is the Pearson correlation coeff.
     """
     dataset = generate_dataset(dataset_config, raw_df)
     model = generate_model(model_config)
