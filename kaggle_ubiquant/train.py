@@ -43,6 +43,3 @@ def training_run(
         wandb.finish()
     
     return model, r
-
-def test():
-    print('hi')
