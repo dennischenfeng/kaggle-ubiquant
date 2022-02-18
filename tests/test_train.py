@@ -68,6 +68,5 @@ def test_training_run(df_smallest):
     # TODO: how to test robustly with wandb?
     dc = DatasetConfig(7, 5, 5)
     mc = ModelConfig()
-    r = training_run(df_smallest, dc, mc, wandb_project=None)
+    _, r = training_run(df_smallest, dc, mc, wandb_project=None)
     assert -1.0 <= r <= 1.0
-    

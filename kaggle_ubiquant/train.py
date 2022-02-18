@@ -6,7 +6,7 @@ from kaggle_ubiquant.dataset import generate_dataset, DatasetConfig, Dataset
 from kaggle_ubiquant.model import generate_model, ModelConfig
 import pandas as pd
 import numpy as np
-from typing import Iterable, Dict, Tuple, Callable, Optional
+from typing import Iterable, Dict, Tuple, Callable, Optional, Any
 from scipy.stats import pearsonr
 import wandb
 import dataclasses
@@ -17,9 +17,9 @@ def training_run(
     dataset_config: DatasetConfig, 
     model_config: ModelConfig, 
     wandb_project: Optional[str] = None,
-) -> float:
+) -> Tuple[Any, float]:
     """
-    Returns a score (goal is to maximize). In this case, it's the Pearson correlation coeff.
+    Returns the model and the score (goal is to maximize). In this case, score is the Pearson correlation coeff.
     """
     dataset = generate_dataset(dataset_config, raw_df)
     model = generate_model(model_config)
@@ -42,4 +42,4 @@ def training_run(
         wandb.log({'pearsonr': r})
         wandb.finish()
     
-    return r
+    return model, r
