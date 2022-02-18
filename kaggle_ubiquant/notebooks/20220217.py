@@ -45,15 +45,11 @@ len(pd.unique(df.investment_id))
 dc = DatasetConfig(7, 5, 5)
 mc = ModelConfig()
 
-# %% tags=[]
-# Moved code to git repo
-
-# %%
-# training_run(df, dc, mc, 'kaggleUbiquant-scratch')
+# %% [markdown]
+# (Moved code and unit test to git repo)
 
 # %% [markdown]
 # # Investigate wandb.sklearn
-# Conclusion: only helps with visualizations/plotting, not much else
 
 # %%
 X_train = dataset.train.loc[:, feature_columns]
@@ -68,7 +64,8 @@ wandb.sklearn.plot_regressor(model, X_train, X_test, y_train, y_test)
 # %%
 wandb.finish()
 
-# %%
+# %% [markdown]
+# Conclusion: only helps with visualizations/plotting, not much else
 
 # %% [markdown]
 # # Build training loop
@@ -112,5 +109,8 @@ for i in range(1):
         scores.append(training_run(df, dc, mc, 'kaggleUbiquant-scratch'))
         
     study.tell(trial, np.mean(scores))
+
+# %% [markdown]
+# Conclusion: okay, ready to use Google Colab to run the sweep now
 
 # %%
