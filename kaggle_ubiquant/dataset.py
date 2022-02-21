@@ -22,7 +22,7 @@ class DatasetConfig:
     n_investments_test: int 
     n_investments_overlap: int
     start_test_time_id: int = 900
-    num_lags: int = 1
+    num_lags: int = 0
     lag_default_value: float = 0
     use_investment_id: bool = True
 

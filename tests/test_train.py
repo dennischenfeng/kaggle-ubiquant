@@ -20,7 +20,7 @@ def df_smallest():
 
 def test_generate_dataset(df_smallest):
     # 1st
-    dataset_config = DatasetConfig(5, 3, 2)
+    dataset_config = DatasetConfig(5, 3, 2, num_lags=1)
     ds = generate_dataset(dataset_config, df_smallest)
     train_iids = pd.unique(ds.train.investment_id)
     assert train_iids.shape[0] == 5
@@ -39,7 +39,7 @@ def test_generate_dataset(df_smallest):
     assert 'target_lag1' not in ds.train
 
     # 3rd
-    dataset_config = DatasetConfig(5, 3, 2, lag_default_value=7.7)
+    dataset_config = DatasetConfig(5, 3, 2, num_lags=1, lag_default_value=7.7)
     ds = generate_dataset(dataset_config, df_smallest)
     assert ds.train.iloc[0, ds.train.columns.get_loc('target_lag1')] == 7.7
 
