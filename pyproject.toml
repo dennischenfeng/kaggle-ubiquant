@@ -22,6 +22,8 @@ tqdm = "^4.62.3"
 pytest = "^7.0.1"
 xgboost = "^1.5.2"
 optuna = "^2.10.0"
+lightgbm = "^3.3.2"
+catboost = "^1.0.4"
 
 [tool.poetry.dev-dependencies]
 
